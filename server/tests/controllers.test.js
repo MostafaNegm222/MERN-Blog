@@ -84,6 +84,15 @@ describe("friends", () => {
     User.findById.mockImplementation(async (id) => ({ me, other }[id]));
     await addRemoveFriend({ params: { id: "me", friendId: "other" } }, makeRes());
     expect(me.friends).toEqual([]);
+    expect(other.friends).toEqual([]);
+  });
+
+  test("addRemoveFriend only removes the caller from the friend's list, not other friends", async () => {
+    const me = person("me", ["other"]);
+    const other = person("other", ["me", "third"]);
+    User.findById.mockImplementation(async (id) => ({ me, other }[id]));
+    await addRemoveFriend({ params: { id: "me", friendId: "other" } }, makeRes());
+    expect(other.friends).toEqual(["third"]);
   });
 
   test("getUserFriends returns only the public fields", async () => {

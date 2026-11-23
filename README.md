@@ -78,7 +78,7 @@ Optional sample data: `server/data/index.js` has sample users and posts. Uncomme
 ## Tests
 
 ```bash
-cd server && npm test        # 12 tests
+cd server && npm test        # 13 tests
 cd client && npm test        # 6 tests
 ```
 
@@ -88,5 +88,4 @@ cd client && npm test        # 6 tests
 ## Known limits
 
 - The client uses hard-coded `http://localhost:3001` URLs, so it is not ready for deployment as is.
-- Removing a friend only updates the caller's list correctly. The other user's list is not updated (a bug in `addRemoveFriend`).
 - The comments field exists in the Post model but there is no route to add comments.

@@ -1,91 +1,82 @@
 # MERN Social Feed
 
+## 1. Description
+
 A social media web app built with the MERN stack. Users sign up with a profile picture, log in, post text and images to a shared feed, like posts, add or remove friends, and visit profile pages. The interface has a light and dark theme.
 
-## What it does
+## 2. Technologies and Versions
 
-**Client (`client/`, React)**
-- Login and registration form with validation (Formik and Yup) and profile picture upload (react-dropzone).
-- Home page: your profile card, a post box with optional image, the feed, a friends list and an advert panel.
-- Profile page for any user with their posts and friends.
-- Protected routes: `/home` and `/profile/:userId` redirect to the login page without a token.
-- Redux Toolkit holds the user, token, posts and theme mode, saved between visits with redux-persist.
+- **Client (`client/`)**: React ^18.2.0 (react-scripts 5.0.1), Material UI ^5.15.15 with @emotion/react ^11.11.4 and @emotion/styled ^11.11.5, Redux Toolkit ^2.2.3 with react-redux ^9.1.0 and redux-persist ^6.0.0, React Router ^6.22.3, Formik ^2.4.5 with Yup ^1.4.0, react-dropzone ^14.2.3
+- **Server (`server/`)**: Node.js (ES modules) with Express ^4.19.2, MongoDB with Mongoose ^8.3.1, JWT ^9.0.2, bcrypt ^5.1.1, Multer ^1.4.4 (image upload to disk), Helmet ^7.1.0, morgan ^1.10.0, cors ^2.8.5, dotenv ^16.4.5
+- **Tests**: Jest ^30.5.2 on the server, Jest through react-scripts on the client
 
-**Server (`server/`, Express and MongoDB)**
-- `POST /auth/register` (with picture upload) and `POST /auth/login`. Passwords are hashed with bcrypt, login returns a JWT.
-- `GET /users/:id`, `GET /users/:id/friends`, `PATCH /users/:id/:friendId` to add or remove a friend.
-- `POST /posts` (with picture), `GET /posts` feed, `GET /posts/:userId/posts`, `PATCH /posts/:id/like` to toggle a like.
-- All routes except register and login need `Authorization: Bearer <token>`.
-- Uploaded images are saved on disk in `server/public/assets` and served from `/assets`.
+## 3. Requirements and Dependencies
 
-## Tech stack
+- Node.js installed
+- A MongoDB database (local or Atlas)
+- Dependencies are installed with `npm install` inside `server/` and `client/`
 
-- **Client:** React 18, Material UI 5, Redux Toolkit, redux-persist, React Router 6, Formik, Yup
-- **Server:** Node.js (ES modules), Express 4, MongoDB with Mongoose 8, JWT, bcrypt, Multer, Helmet, Morgan
-- **Tests:** Jest on the server, Jest through react-scripts on the client
+## 4. Installation and Run Steps
 
-## Project structure
-
+```bash
+git clone https://github.com/MostafaNegm222/MERN-Blog.git
+cd MERN-Blog
 ```
-├── client/src/
-│   ├── scenes/        # loginPage, homePage, profilePage, navbar, widgets
-│   ├── components/    # shared UI pieces
-│   ├── state/         # Redux slice
-│   └── theme.js       # light and dark theme
-└── server/
-    ├── controllers/   # auth, users, posts
-    ├── models/        # User, Post
-    ├── routes/  middleware/
-    ├── data/          # sample users and posts (optional seed data)
-    └── tests/         # Jest tests
-```
-
-## Run it locally
-
-You need Node.js and a MongoDB database (local or Atlas).
 
 **Server**
 
 ```bash
 cd server
 npm install
-```
-
-Create `server/.env`:
-
-```
-MONGO_URL=mongodb://127.0.0.1:27017/social
-JWT_SECRET=choose-a-long-random-string
-PORT=3001
-```
-
-```bash
+# create server/.env with the variables from section 5
 npm start       # node index.js   (or npm run dev for nodemon)
 ```
 
-The client has the server address `http://localhost:3001` written into its fetch calls, so use port 3001. The code falls back to 6001 if `PORT` is not set.
+The client has the server address `http://localhost:3001` written into its fetch calls, so use port 3001. The server code falls back to 6001 if `PORT` is not set.
 
-**Client**
+**Client** (in a second terminal)
 
 ```bash
 cd client
 npm install
-npm start       # http://localhost:3000
+npm start       # react-scripts start on http://localhost:3000
 ```
 
-Optional sample data: `server/data/index.js` has sample users and posts. Uncomment the two `insertMany` lines in `server/index.js` for one run to load them.
+## 5. Environment Variables
 
-## Tests
+Server `.env` (no secrets are stored in the repo):
+
+| Variable | Purpose |
+| --- | --- |
+| `MONGO_URL` | MongoDB connection string |
+| `JWT_SECRET` | Secret used to sign login tokens |
+| `PORT` | API port (use 3001 to match the client; default 6001) |
+
+## 6. Usage and Main Features
+
+**Client (React)**
+
+- Login and registration form with validation (Formik and Yup) and profile picture upload (react-dropzone).
+- Home page: your profile card, a post box with optional image, the feed, a friends list and an advert panel.
+- Profile page for any user with their posts and friends.
+- Protected routes: `/home` and `/profile/:userId` redirect to the login page without a token.
+- Redux Toolkit holds the user, token, posts and theme mode, saved between visits with redux-persist. Light and dark themes.
+
+**Server (Express + MongoDB)**
+
+- `POST /auth/register` (with picture upload) and `POST /auth/login`; passwords hashed with bcrypt, login returns a JWT.
+- `GET /users/:id`, `GET /users/:id/friends`, `PATCH /users/:id/:friendId` to add or remove a friend.
+- `POST /posts` (with picture), `GET /posts` feed, `GET /posts/:userId/posts`, `PATCH /posts/:id/like` to toggle a like.
+- All routes except register and login need `Authorization: Bearer <token>`.
+- Uploaded images are saved on disk in `server/public/assets` and served from `/assets`.
+
+## 7. Screenshots / Demo
+
+No live demo; the app runs locally.
+
+## 8. Running Tests
 
 ```bash
-cd server && npm test        # 13 tests
-cd client && npm test        # 6 tests
+cd server && npm test     # Jest server tests in server/tests/
+cd client && npm test     # react-scripts test for the client
 ```
-
-- Server: the JWT middleware, login and register (password hashing, token), friend add and remove, friend list fields, like toggle and user posts. Mongoose models are mocked, so no database is needed.
-- Client: every reducer in the Redux slice.
-
-## Known limits
-
-- The client uses hard-coded `http://localhost:3001` URLs, so it is not ready for deployment as is.
-- The comments field exists in the Post model but there is no route to add comments.
